@@ -1,4 +1,6 @@
 # Pygame шаблон - скелет для нового проекта Pygame
+import sys
+from time import sleep
 import pygame
 import os
 
@@ -93,22 +95,29 @@ class Player(Sprite):
         print(self.rect.x, self.rect.y)
 
 
+class Enemy(Sprite):
+    def update(self) -> None:
+        if self.rect.colliderect(player):
+            sleep(1)
+            os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
+
+
 player = Player(image='player.png', x=20)
 wall = Sprite(x_size=10, y_size=500, y=100)
 wall2 = Sprite(x_size=10, y_size=500, y=0, x=340)
 wall2 = Sprite(x_size=10, y_size=500, y=0, x=340)
 wall3 = Sprite(x_size=100, y_size=10, y=400, x=500)
 wall4 = Sprite(x_size=100, y_size=10, y=250, x=340)
-
 coin = Sprite(50, 50, 250, 300, 'coin.png')
 coin2 = Sprite(50, 50, 310, 530, 'coin.png')
 finis_coin = Sprite(50, 50, 390, 170, 'coin.png')
+bomb = Enemy(20, 70)
 walls = pygame.sprite.Group()
 coins = pygame.sprite.Group()
 coins.add(coin, coin2, finis_coin)
 walls.add(wall, wall2, wall3, wall4)
 all_sprites.add(wall, player, wall2, coin, wall3, wall4, coin2,
-                finis_coin)
+                finis_coin, bomb)
 
 # Цикл игры
 running = True
@@ -134,5 +143,7 @@ while running:
             finish = True
             background_image = pygame.transform.scale(pygame.image.load(os.path.join(img_folder,
                                                                                      'winner.jpg')).convert(), [WIDTH, HEIGHT])
+
+        bomb.update()
 
     pygame.display.flip()
